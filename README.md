@@ -1,4 +1,4 @@
-# Memoire Master 2 TNAH 2023-2024 NGUYEN Le Thuy Tien - Projet Tables du Sénat
+# Mémoire Master 2 TNAH 2023-2024 NGUYEN Le Thuy Tien - Projet Tables du Sénat
 ## Rendu Mémoire de stage TNAH - projet AGODA  
 Ce dépôt contient :
 Les livrables techniques mentionnés dans l'annexe du mémoire et réparti en dossier Annexe:
