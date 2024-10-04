@@ -525,7 +525,6 @@ Les livrables techniques mentionnés dans l'annexe du mémoire et réparti en do
         -	Étienne_Blanc.csv
         -	Évelyne_Perrot.csv
         -	Évelyne_Renaud-Garabedian.csv
-        -	
    - Le dossier `/Script Python` contient trois fichiers notebook Jupyter de travail d'extraction.
      - Telecharge_cri_PDF.ipynb : Script pour télécharger les fichiers JOs sur site du Sénat. 
      - extraction.ipynb : Script pour extraitre les informations de JOs
