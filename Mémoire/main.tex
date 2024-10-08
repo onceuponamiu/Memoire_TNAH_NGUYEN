@@ -1,0 +1,1034 @@
+%%%%%%%%%%%%% Partie obligatoire du préambule
+\documentclass[a4paper,12pt,twoside]{book}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage[french]{babel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES UTILISÉS
+
+% Chargement du package biblatex
+\usepackage{url}
+\usepackage{csquotes} % les guillemets français
+\usepackage[
+    left = \flqq{},% 
+    right = \frqq{},% 
+    leftsub = \flq{},% 
+    rightsub = \frq{} %
+]{dirtytalk}
+
+\usepackage{lettrine} %faire une lettrine (pas obligatoire)
+\usepackage[style=enc,sorting=nyt,maxbibnames=10]{biblatex}%charger le style de l'EnC (téléchargeable ici https://ctan.org/pkg/biblatex-enc)
+\addbibresource{Bibliographie/Senat.bib}
+\addbibresource{Bibliographie/Automatisation.bib}
+
+\DeclareSourcemap{%
+ \maps[datatype=bibtex]{%
+ 	\map[overwrite]{%
+ 		\perdatasource{Bibliographie/Senat.bib}
+ 		\step[fieldset=keywords, fieldvalue={,senat}, append]
+ 	}
+	\map[overwrite]{%
+		\perdatasource{Bibliographie/Automatisation.bib}
+		\step[fieldset=keywords, fieldvalue={,auto}, append]
+	}	
+  }
+}
+ 
+\nocite{*}
+\defbibnote{intro}{Cette bibliographie présente toutes les ressources utilisées, de tout type, citées ou non, par simple ordre alphabétique.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% AJOUT DE PACKAGE
+\usepackage{graphicx} % Pour les insertions d'images
+\usepackage{adjustbox} % Pour adapter la taille des images
+\usepackage{lscape}
+\usepackage{float}
+\usepackage{tabularx} % Package pour un tableau ajustable
+%\usepackage{tocbibind} % pour l'inclusion de la liste des figures etc à la table des matière
+\usepackage{verbments} % For verbatim inside tabular
+\usepackage[table]{xcolor} % Pour la coloration des tableaux et du texte
+\usepackage{array} % Pour la gestion des tableaux. Le type de colonne m{}, permet de centrer verticalement le texte dans les cellules.
+\usepackage{pdfpages} % Pour inclure des fichiers PDF (annexe 2)
+\usepackage{tocbibind} % Pour inclure les annexes dans la table des matières
+\usepackage{longtable}  % Gói này sẽ giúp xử lý các bảng dài.
+\usepackage{makecell}   % Gói này giúp điều chỉnh kích thước ô và tự động xuống dòng.
+
+\usepackage{titlesec}
+
+% Tạo một cấp mới nhỏ hơn subsubsection (ví dụ như subsubsubsection)
+\titleclass{\subsubsubsection}{straight}[\subsubsection]
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+
+\titlespacing*{\subsubsubsection}{0pt}{1.5ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONFIGURATION DE MISE EN PAGE
+
+%%%%%% Les compteurs (sections, subsections, etc)
+%\renewcommand{\thesection}{\Roman{section}.}%On ne fait apparaître que le numéro de la section
+%\renewcommand{\thesubsection}{\arabic{subsection}.}%subsection en chiffres arabes
+%\renewcommand{\thesubsubsection}{\alph{subsubsection}.}%subsubsection en lettres minuscules
+%Si l'on veut faire apparaître les subsubsection dans le table des matières (à commenter sinon)
+\setcounter{tocdepth}{3}
+
+%%%%%% Mise en page École des chartes
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing % interligne de 1.5
+\setlength\parindent{1cm}
+
+% Pour retirer le titre courant d'une page vide avant un chapitre
+\newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+
+%%%%% Mise en forme des en-têtes et pieds de page
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[LO]{\rightmark}
+\fancyhead[RO]{}
+\fancyhead[RE]{\leftmark}
+\fancyhead[LE]{}
+\fancyfoot[C]{\thepage}
+
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+
+\setlength\headheight{16pt} % la hauteur des headers
+\renewcommand{\sectionmark}[1]{\markright{\small\textit{\thesection~\  #1}}} % Faire apparaître dans les headers les sections en petit et en italiques
+\renewcommand{\chaptermark}[1]{\markboth{\small\chaptername~\thechapter~--\ \textit{#1}}{}} % idem pour les chapitres
+
+% Package hyperref
+\usepackage[xetex]{hyperref} % Inclure hyperref une seule fois
+\hypersetup{
+	pdfauthor = {Prénom Nom},
+	pdftitle = {Titre du Document},
+	pdfsubject = {Mémoire TNAH — Titre},
+	pdfkeywords = {automatisation, python, pdfplumber, regex, tables du senat, journal officiel, séance publique}, % Séparer les mots-clés par des virgules
+	colorlinks = false, % Pour que les liens n'aient pas de couleur
+	breaklinks = true, % Permet aux liens d'être sur plusieurs lignes
+	}
+% Package bookmark, à mettre après hyperref
+\usepackage[numbered]{bookmark} % Les signets seront numérotés
+% Blocs de code
+\usepackage{listings}
+
+% Định nghĩa các màu sắc
+\definecolor{purple}{rgb}{0.58, 0.0, 0.83}     % Màu tím cho từ khóa đặc biệt như from, import
+\definecolor{blue}{rgb}{0.0, 0.0, 1.0}         % Màu xanh dương cho từ khóa như def, True, False, etc.
+\definecolor{yellow}{rgb}{1.0, 0.84, 0.0}      % Màu vàng cho tên hàm khai báo, print, quit, range, len
+\definecolor{red}{rgb}{1.0, 0.0, 0.0}          % Màu đỏ cho chuỗi ký tự, đường dẫn, URL
+\definecolor{green}{rgb}{0.0, 0.5, 0.0}        % Màu xanh lá cho comment
+\definecolor{black}{rgb}{0.0, 0.0, 0.0}        % Màu đen cho các phần còn lại
+\definecolor{graybackground}{rgb}{0.95, 0.95, 0.95}  % Màu nền xám nhạt
+
+% Thiết lập hiển thị code Python cho toàn bộ tài liệu
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,          % Font monospace
+    keywordstyle=\color{purple}\bfseries, % Từ khóa màu tím (from, import, if, while,...)
+    keywordstyle=[2]\color{blue},        % Từ khóa màu xanh dương cho các từ như def, True, False, range, len, open...
+    commentstyle=\color{green}\itshape,  % Comment màu xanh lá
+    stringstyle=\color{red},             % Chuỗi ký tự màu đỏ
+    identifierstyle=\color{black},       % Biến/hàm màu đen
+    showstringspaces=false,              % Ẩn khoảng trắng trong chuỗi
+    backgroundcolor=\color{graybackground}, % Nền màu xám nhạt
+    frame=single,                        % Khung xung quanh mã
+    breaklines=true,                     % Xuống dòng tự động khi mã quá dài
+    numbers=none,                        % Không đánh số dòng
+    tabsize=4,                           % Kích thước tab
+    captionpos=b,                        % Đặt caption ở dưới cùng
+    morekeywords={from, import, if, while, try, break, except, return, elif, with, for, as}, % Từ khóa màu tím
+    morekeywords=[2]{def, not, True, False, (), f, range, len, open, in, r}, % Từ khóa màu xanh dương (def, True, False...)
+    emph={print, quit, range, len},      % Từ khóa cần tô màu vàng (print, quit, range, len)
+    emphstyle=\color{yellow}\bfseries,   % Màu vàng cho các từ khóa quan trọng
+    emph={[2]extract_bold_lines_from_all_pages}, % Tên hàm khai báo màu vàng
+    emphstyle={[2]\color{yellow}\bfseries},
+    morestring=[b]", % Chuỗi ký tự màu đỏ
+    morestring=[b]', 
+}
+
+\lstdefinelanguage{XML}
+{
+	basicstyle=\ttfamily, % Style de base pour le texte du code
+	morestring=[b]", % Identification des chaînes de caractères entre guillemets doubles
+	morestring=[s]{>}{<}, % Identification des chaînes entre '>' et '<' 
+	identifierstyle=\color{blue}, % Couleur des noms de balises
+	keywordstyle=\color{orange}, % Couleur des mots clés
+	commentstyle=\color{green}, % COuleur des commentaires 
+	moredelim=[s][\color{red}]{\ }{=}, % Définition des délimiteurs pour les attributs (espaces suivis d'un signe "=")
+	stringstyle=\color{orange}, % COuleur des chaînes de caractères
+	moredelim=[s][\color{black}]{>}{<}, % Définition des délimiteurs pour les balises (entre '>' et '<') en noir
+	showspaces=false,  % Ne pas montrer les espaces
+	frame=tb, % Cadre en haut et en bas
+	breaklines=true, % Couper les lignes trop longues
+	tabsize=2  % Taille des tabulations}
+}
+
+% Définition d'un environnement pour le code XML
+\lstnewenvironment{xml}
+{
+	% Applique le style de code XML et défini la police et la taille du texte, permet aux chaînes de casser automatiquement en fin de ligne, 
+	\lstset{language=XML, basicstyle=\ttfamily\small, breaklines=true}
+}
+{}
+
+% Définition d'un style pour le code XML appelé dans le texte
+\newcommand\xmlstyle{\lstset{
+		language=XML,
+		basicstyle=\ttfamily,
+		keywordstyle=\color{orange},
+		stringstyle=\color{orange},
+		identifierstyle=\color{blue},
+		commentstyle=\color{green},
+		moredelim=[s][\color{red}]{\ }{=},
+		moredelim=[s][\color{black}]{>}{<},
+}}
+% Glossaire
+\usepackage[toc=true]{glossaries}
+\makeglossaries
+
+% Définitions du glossaire
+\newglossaryentry{groupes_politiques}{
+    name={Groupes politiques},
+    description={Les groupes politiques au Sénat sont des regroupements de sénateurs par affinités politiques. Chaque sénateur appartient à un groupe, sauf s'il est non-inscrit. Ces groupes sont proportionnellement représentés selon leur importance numérique et jouent un rôle crucial dans les débats et les votes.}
+}
+
+\newglossaryentry{bureau_senat}{
+    name={Bureau du Sénat},
+    description={Le Bureau du Sénat est un organe collégial composé de 26 membres : le Président du Sénat, 8 Vice-présidents, 3 Questeurs et 14 Secrétaires. Il est chargé de prendre les décisions relatives à l'organisation et au fonctionnement interne du Sénat. La composition reflète la représentation proportionnelle des groupes politiques.}
+}
+
+\newglossaryentry{commissions_permanentes}{
+    name={Commissions permanentes},
+    description={Les commissions permanentes sont des organes législatifs au sein du Sénat composés de sénateurs issus des différents groupes politiques. Elles sont chargées d'examiner les projets de loi et de proposer des amendements avant leur discussion en séance publique.}
+}
+
+\newglossaryentry{commissions_temporaires}{
+    name={Commissions temporaires},
+    description={Les commissions temporaires sont créées pour traiter des sujets ponctuels ou urgents. Leur composition varie en fonction des thématiques à aborder et de la disponibilité des sénateurs compétents.}
+}
+
+\newglossaryentry{delegations_structures}{
+    name={Délégations et autres structures parlementaires},
+    description={Les délégations parlementaires sont des groupes chargés de suivre des thématiques spécifiques, telles que les droits des femmes ou le renseignement. Elles complètent le travail des commissions permanentes en approfondissant certains dossiers.}
+}
+
+\newglossaryentry{changements_organes}{
+    name={Changements au sein des organes},
+    description={Les changements dans les commissions, délégations et autres organes surviennent après les élections sénatoriales ou des ajustements internes. Ces modifications visent à refléter les nouvelles configurations politiques et les besoins institutionnels.}
+}
+
+\newglossaryentry{cour_justice_republique}{
+    name={Cour de justice de la République},
+    description={La Cour de justice de la République est une juridiction spéciale qui juge les ministres pour les infractions commises dans l'exercice de leurs fonctions. Elle est composée de parlementaires et de magistrats de la Cour de cassation.}
+}
+
+\newglossaryentry{organismes_extra_parlementaires}{
+    name={Organismes extra-parlementaires},
+    description={Les organismes extra-parlementaires incluent des instances consultatives dans lesquelles des parlementaires siègent pour orienter des politiques publiques. Ces organismes jouent un rôle clé dans le conseil aux agences publiques et aux commissions.}
+}
+
+\newglossaryentry{petitions}{
+    name={Pétitions},
+    description={Les pétitions permettent aux citoyens de soumettre directement des questions au Parlement. Elles sont examinées par des commissions qui décident des suites à donner, comme des débats ou des propositions de loi.}
+}
+
+\newglossaryentry{rapports}{
+    name={Rapports remis au Parlement},
+    description={Les rapports sont des documents rédigés par les commissions ou délégations parlementaires. Ils présentent des analyses ou des recommandations sur des sujets législatifs et peuvent aboutir à des propositions de loi.}
+}
+
+
+ \newglossaryentry{actionchains}{%
+    name={ActionChains},%
+    description={ActionChains est une classe dans la bibliothèque Selenium pour Python qui permet de créer et d'exécuter des séquences complexes d'interactions utilisateur, telles que cliquer, glisser-déposer, et double-cliquer, sur les éléments d'une interface graphique d'application web}}
+
+\newglossaryentry{bert}{%
+    name={BERT},%
+    description={BERT (Bidirectional Encoder Representations from Transformers) est un modèle d'apprentissage profond basé sur les transformers, développé par Google, qui permet d'obtenir des représentations de texte contextuelles. BERT est particulièrement puissant pour les tâches de NLP telles que la classification de texte, la réponse à des questions, et l'analyse syntaxique}}
+
+\newglossaryentry{xpath}{%
+    name={XPath},%
+    description={XML Path Language. Langage utilisé pour naviguer et sélectionner des éléments au sein d'une structure de document XML ou HTML. Il permet de désigner de manière précise des parties spécifiques d'un document en fonction de sa structure hiérarchique, comme des balises, des attributs ou des valeurs.}}
+
+
+\newglossaryentry{selenium}{%
+    name={Selenium},%
+    description={Bibliothèque open-source utilisée principalement pour l'automatisation de tests de navigateurs web. Elle permet de simuler des interactions avec un navigateur, comme un utilisateur humain le ferait, ce qui la rend particulièrement utile pour tester des applications web de manière automatisée.}}
+
+\newglossaryentry{csv}{%
+    name={CSV},%
+    description={Le CSV (Comma-Separated Values) est un format de fichier utilisé pour stocker des données tabulaires sous forme de texte brut. Chaque ligne du fichier représente une ligne de la table, et les valeurs de chaque colonne sont séparées par des virgules (ou par d'autres séparateurs, comme les points-virgules)}}
+
+\newglossaryentry{dataframe}{%
+    name={DataFrame},%
+    description={Un DataFrame est une structure de données bidimensionnelle de type tableau, souvent utilisée dans les bibliothèques de manipulation de données comme Pandas en Python. Il permet de stocker et de manipuler des données en colonnes, où chaque colonne peut être de types différents (numériques, textuels, etc.)}}
+
+\newglossaryentry{gliner}{%
+    name={GLiNER},%
+    description={Gliner est une méthode ou un outil utilisé pour l'automatisation ou l'optimisation de certains processus, mais les détails spécifiques peuvent dépendre du contexte d'application. Il pourrait être nécessaire de définir avec plus de précision en fonction du domaine où le terme est utilisé}}
+
+\newglossaryentry{gliner-ner}{%
+    name={Modèle NER Gliner},%
+    description={Le modèle NER (Named Entity Recognition) Gliner est un modèle spécifique de reconnaissance d'entités nommées utilisé pour identifier et classer automatiquement des entités comme des personnes, des organisations, des dates ou des lieux dans un texte. Ce modèle peut être basé sur des approches d'apprentissage profond et est utilisé dans le traitement automatique du langage naturel (NLP) pour extraire des informations structurées à partir de données textuelles non structurées}}
+
+\newglossaryentry{google-colab}{%
+    name={Google Colab},%
+    description={Google Colaboratory, communément appelé Google Colab, est un environnement de développement intégré basé sur le cloud qui permet d'exécuter du code Python directement dans le navigateur. Il est particulièrement utile pour les tâches nécessitant des ressources de calcul importantes, telles que l'entraînement de modèles d'apprentissage automatique. Google Colab permet d'accéder gratuitement à des GPU et TPU, facilitant ainsi l'expérimentation avec des projets de machine learning et de deep learning}}
+
+\newglossaryentry{mypdf}{%
+    name={mypdf},%
+    description={\texttt{mypdf} est une bibliothèque Python utilisée pour la création, la lecture et la modification de fichiers PDF. Elle permet de générer des documents PDF à partir de zéro ou d'ajouter du contenu à des fichiers existants, comme du texte, des images, ou des annotations. \texttt{mypdf} prend en charge la manipulation des polices, des styles de texte, et des éléments graphiques, rendant ainsi possible l'automatisation de tâches telles que la génération de rapports ou de factures. Elle est également utilisée pour extraire des informations spécifiques à partir de fichiers PDF, comme des métadonnées ou du texte, ce qui en fait un outil polyvalent pour la gestion des documents électroniques}}
+
+\newglossaryentry{ner}{%
+    name={NER},%
+    description={La reconnaissance d'entités nommées (NER, Named Entity Recognition) est une tâche de traitement du langage naturel (NLP) qui consiste à identifier et à classer les entités nommées dans un texte, telles que les noms de personnes, d'organisations, de lieux, de dates, de valeurs numériques, etc. Les modèles NER sont souvent utilisés pour l'extraction d'informations à partir de grandes quantités de données textuelles}}
+
+\newglossaryentry{elementtree}{%
+    name={ElementTree},%
+    description={API intégrée dans Python pour la manipulation des fichiers XML. Elle fait partie du module xml.etree.ElementTree et permet de lire, écrire, parcourir et modifier des documents XML de manière simple et efficace.}}
+
+
+
+\newglossaryentry{nlp}{%
+    name={NLP},%
+    description={Le traitement du langage naturel (NLP, Natural Language Processing) est un sous-domaine de l'intelligence artificielle qui s'intéresse à l'interaction entre les ordinateurs et les langues humaines. Il inclut des techniques pour l'analyse, la compréhension et la génération du langage humain naturel, utilisé notamment pour des tâches comme la traduction automatique, l'analyse de sentiments, et la reconnaissance d'entités nommées}}
+
+\newglossaryentry{ocr}{%
+    name={OCR},%
+    description={La reconnaissance optique de caractères (OCR, Optical Character Recognition) est une technologie permettant de convertir des images de texte en texte codé. Elle est utilisée pour la numérisation de documents imprimés ou manuscrits, facilitant ainsi la recherche, l'édition et l'archivage de textes}}
+
+\newglossaryentry{pandas}{%
+    name={pandas},%
+    description={Pandas est une bibliothèque open-source en Python largement utilisée pour la manipulation et l'analyse de données. Elle est particulièrement adaptée aux structures de données tabulaires, comme les feuilles de calcul ou les bases de données.}}
+
+\newglossaryentry{pdf}{%
+    name={PDF},%
+    description={Le Portable Document Format (PDF) est un format de fichier développé par Adobe pour représenter des documents de manière indépendante du logiciel, du matériel et du système d'exploitation utilisé. Il est largement utilisé pour partager des documents électroniques tout en conservant la mise en forme, les polices, les images et autres éléments visuels}}
+
+\newglossaryentry{pdfplumber}{%
+    name={pdfplumber},%
+    description={\texttt{pdfplumber} est une bibliothèque Python spécialisée dans l'extraction avancée de données à partir de fichiers PDF. Contrairement à d'autres bibliothèques qui se concentrent uniquement sur l'extraction de texte brut, \texttt{pdfplumber} permet également de capturer des éléments structurés tels que des tableaux, des images, des graphiques et même des figures complexes. Cette bibliothèque est particulièrement utile pour les utilisateurs qui ont besoin de traiter des documents PDF contenant des données tabulaires ou des diagrammes, comme des relevés bancaires, des factures ou des rapports techniques. Elle permet aussi de manipuler les fichiers PDF en identifiant et extrayant des sections spécifiques, tout en gérant les différences de mise en page et de structure entre les fichiers}}
+
+\newglossaryentry{python}{%
+    name={Python},%
+    description={Le langage Python est un langage de programmation open source multi-plateformes et orienté objet. Grâce à des bibliothèques spécialisées, Python s'utilise à la fois pour le développement web, l'analyse de données, l'intelligence artificielle et la gestion d'infrastructures. Actuellement le plus utilisé au monde, ce langage est dit de \enquote{haut niveau} car il permet d'écrire des programmes en utilisant des mots usuels des langues naturelles et des symboles mathématiques familiers}}
+
+\newglossaryentry{regex}{%
+    name={Regex},%
+    description={Les expressions régulières (Regex, Regular Expressions) sont des séquences de caractères qui définissent un modèle de recherche. Elles sont utilisées pour correspondre et manipuler des chaînes de caractères selon des motifs définis, permettant des tâches comme la validation de formats de données, la recherche et le remplacement de texte, ou l'extraction de sous-chaînes spécifiques dans des documents textuels}}
+
+\newglossaryentry{spacy}{%
+    name={spaCy},%
+    description={spaCy est une bibliothèque de traitement du langage naturel en Python, optimisée pour la rapidité et l'efficacité. Elle fournit des outils de pointe pour les tâches de NLP comme la reconnaissance d'entités nommées, la lemmatisation, l'analyse de dépendances, et le tokenization. spaCy est largement utilisée dans des applications industrielles et de recherche en raison de sa simplicité d'utilisation et de ses performances élevées}}
+
+\newglossaryentry{XML}{%
+    name={XML},%
+    description={Extensible Markup Language. Langage de balisage conçu pour créer des documents structurés et hiérarchisés à l’aide de balises définies par l'utilisateur, contrairement aux langages de balisage avec des balises prédéfinies. XML est principalement utilisé pour la gestion et l’échange d’informations, permettant de partager et de stocker des données de manière lisible pour les humains et les machines. Son objectif principal est de faciliter l'interopérabilité entre différents systèmes, notamment via Internet}}
+
+\newglossaryentry{SQL}{%
+    name={SQL},%
+    description={Structure Query Language. Langage de requête structuré utilisé pour interagir avec des bases de données relationnelles.}}
+
+\newglossaryentry{Prepub}{%
+    name={Prepub},%
+    description={Logiciel d'archivage interne du Sénat français pour saisie, analyse et publication du Journal Officiel.}}
+
+\newglossaryentry{JO}{%
+    name={Journal Officiel},%
+    description={Conformément à l'article 33 de la Constitution, les séances du Sénat sont publiques et le compte rendu intégral des débats est publié au Journal Officiel.}}
+
+\newglossaryentry{bornage}{%
+    name={bornage},%
+    description={Marquage des contenus du Journal Officiel en prévision d'une analyse des débats}}
+
+\newglossaryentry{HTML}{%
+    name={HTML},%
+    description={HyperText Markup Language. Langage de balisage standard utilisé pour créer des pages web. Il permet de structurer le contenu d'une page en définissant des éléments tels que des titres, des paragraphes, des liens, des images et d'autres médias.}}
+
+\newglossaryentry{PDF}{%
+    name={PDF},%
+    description={Portable Document Format. Format de fichier créé par Adobe Systems en 1993, destiné à représenter des documents de manière indépendante du logiciel, du matériel et des systèmes d'exploitation. Un fichier PDF peut contenir du texte, des images, des graphiques et d'autres éléments, tout en préservant la mise en forme d'origine du document.}}
+
+\newglossaryentry{DILA}{%
+    name={DILA},%
+    description={Direction de l'Information Légale et Administrative. Direction d'administration centrale des services du Premier ministre, placée sous l'autorité du secrétariat général du Gouvernement.}}
+\newglossaryentry{BERT}{
+    name=BERT,
+    description={Modèle de langage basé sur les transformateurs, développé par Google, utilisé pour le traitement du langage naturel (Traitement Automatique du Langage Naturel - TALN) et ayant une bonne capacité à comprendre le contexte.}
+}
+
+\newglossaryentry{spaCy}{
+    name=spaCy,
+    description={Bibliothèque open source pour Python, conçue pour le traitement du langage naturel (TALN), offrant des outils pour analyser le texte, identifier des entités, et bien d'autres fonctionnalités.}
+}
+
+\newglossaryentry{OCR}{
+    name=OCR,
+    description={Optical Character Recognition. La Reconnaissance Optique de Caractères est une technologie qui permet de convertir des images de texte imprimé, écrit à la main ou tapé, en texte numérique exploitable par des ordinateurs.}
+}
+
+\newglossaryentry{open-source}{
+    name=open-source,
+    description={Modèle de développement logiciel dans lequel le code source d'un programme est rendu accessible à tous. Cela signifie que tout utilisateur peut voir, modifier, améliorer ou redistribuer le logiciel selon ses besoins, tant que cela respecte les conditions de la licence sous laquelle il est publié.}
+}
+
+\newglossaryentry{ChatGPT}{
+    name=ChatGPT,
+    description={Generative Pretrained Transformer. ChatGPT est un modèle de traitement du langage naturel développé par OpenAI. Il utilise l'intelligence artificielle pour comprendre et générer du texte en langage naturel, permettant aux utilisateurs d'interagir avec lui via des conversations textuelles.}
+}
+\newglossaryentry{Gliner}{
+    name=Gliner,
+    description={Global Linearization Network with Embedding Representations. Modèle de reconnaissance d'entités nommées (NER) avancé dans le domaine du traitement du langage naturel (NLP). Ce modèle est conçu pour identifier et catégoriser des entités dans un texte, comme des personnes, des organisations, des lieux, des dates, et bien d'autres.}
+}
+
+\newglossaryentry{Tesseract}{
+    name=Tesseract,
+    description={Bibliothèque open-source dédiée à la Reconnaissance Optique de Caractères (OCR). Initialement développée par Hewlett-Packard dans les années 1980, Tesseract est maintenant maintenue par Google. Elle permet de convertir des images contenant du texte en fichiers texte numériques exploitables, tout comme d'autres outils OCR..}
+}
+
+\newglossaryentry{CSV}{
+    name=CSV,
+    description={Format de fichier texte simple où chaque ligne correspond à un enregistrement, et les champs dans l'enregistrement sont séparés par des virgules (Valeurs Séparées par des Virgules). Utilisé couramment pour stocker des données tabulaires.}
+}
+
+\newglossaryentry{cloud}{
+    name=cloud,
+    description={Informatique en nuage en français, désigne l'utilisation de serveurs distants via Internet pour stocker, gérer et traiter des données, au lieu de les gérer sur des serveurs locaux ou des ordinateurs personnels.}
+}
+
+\newglossaryentry{bibliothèque}{
+    name=bibliothèque,
+    description={Library en anglais. Ensemble de fonctions, classes ou modules préécrits qui peuvent être réutilisés par les développeurs dans leurs propres programmes. Elle permet de simplifier le développement en fournissant des outils prêts à l'emploi pour accomplir des tâches spécifiques, comme la gestion des entrées/sorties, les calculs mathématiques, la manipulation de fichiers, ou encore l'interaction avec des bases de données.}
+}
+
+
+% Création de l'environnement pour citer
+\newenvironment{kwote}
+{
+	\begin{quote}
+		\begin{singlespace}
+			\small
+		}
+		{
+			\normalsize
+		\end{singlespace}
+	\end{quote}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%% DOCUMENT
+\begin{document}
+	\onehalfspacing 
+	
+	\frontmatter
+	
+	\include{page-titre}
+	\thispagestyle{empty}
+	\clearemptydoublepage
+
+	\include{resume}
+	\thispagestyle{empty}
+	\clearemptydoublepage
+
+
+	\include{remercierements}
+	\clearemptydoublepage
+
+%%%%%%%%%%%% \bibliographie ici (normes de l'EnC)
+        \chapter{Bibliographie}
+        \section*{Documentations du Sénat}
+        \printbibliography[keyword=senat,heading=none]
+        \section*{Automatisation}
+        \printbibliography[keyword=auto,heading=none]
+        \clearemptydoublepage
+
+
+	%%%%%%%%%%%%%%%%%Le corps du mémoire
+        \mainmatter
+
+	\input{introduction}
+	\newpage{\pagestyle{empty}\cleardoublepage}
+	
+	\part{Sénat et projet de Tables du Sénat}
+	
+	\input{partie1}
+
+ 
+	\part{Études de corpus et tâches d'automatisation }
+	
+	\input{partie2}
+	
+	\part{Prototype d’automatisation}
+	
+	\input{partie3}
+	
+	\input{conclusion}
+	\newpage{\pagestyle{empty}\cleardoublepage}
+
+ %les annexes
+	\chapter*{Annexes}
+        \addcontentsline{toc}{chapter}{Annexes}
+
+        L'annexe accompagnant ce mémoire contiennent les livrables techniques, disponibles sur un \textit{repository} GitHub à l'adresse suivante~: \url{https://github.com/onceuponamiu/Memoire_TNAH_NGUYEN}.
+Cette section fournit des indications sur l'emplacement des fichiers dans les différents dossiers annexés.
+
+Le dépôt contient les éléments suivants, répartis dans les dossiers correspondants:
+
+\section*{Dossier '/Données/cri\_pdf'}
+Ce dossier contient 85 fichiers PDF des Journaux Officiels de 2022, listés ci-dessous:
+\begin{itemize}
+  \item s20220104.pdf
+  \item s20220105.pdf
+  \item s20220106.pdf
+  \item s20220110.pdf
+  \item s20220111.pdf
+  \item s20220112.pdf
+  \item s20220113.pdf
+  \item s20220115.pdf
+  \item s20220118.pdf
+  \item s20220119.pdf
+  \item s20220120.pdf
+  \item s20220125.pdf
+  \item s20220126.pdf
+  \item s20220127.pdf
+  \item s20220201.pdf
+  \item s20220202.pdf
+  \item s20220203.pdf
+  \item s20220208.pdf
+  \item s20220209.pdf
+  \item s20220215.pdf
+  \item s20220216.pdf
+  \item s20220217.pdf
+  \item s20220221.pdf
+  \item s20220222.pdf
+  \item s20220223.pdf
+  \item s20220224.pdf
+  \item s20220225.pdf
+  \item s20220301.pdf
+  \item s20220323.pdf
+  \item s20220706.pdf
+  \item s20220712.pdf
+  \item s20220713.pdf
+  \item s20220719.pdf
+  \item s20220720.pdf
+  \item s20220721.pdf
+  \item s20220726.pdf
+  \item s20220727.pdf
+  \item s20220728.pdf
+  \item s20220729.pdf
+  \item s20220801.pdf
+  \item s20220802.pdf
+  \item s20220803.pdf
+  \item s20220804.pdf
+  \item s20221004.pdf
+  \item s20221005.pdf
+  \item s20221006.pdf
+  \item s20221011.pdf
+  \item s20221012.pdf
+  \item s20221013.pdf
+  \item s20221018.pdf
+  \item s20221019.pdf
+  \item s20221020.pdf
+  \item s20221025.pdf
+  \item s20221026.pdf
+  \item s20221102.pdf
+  \item s20221103.pdf
+  \item s20221104.pdf
+  \item s20221107.pdf
+  \item s20221108.pdf
+  \item s20221109.pdf
+  \item s20221110.pdf
+  \item s20221112.pdf
+  \item s20221114.pdf
+  \item s20221115.pdf
+  \item s20221116.pdf
+  \item s20221117.pdf
+  \item s20221118.pdf
+  \item s20221119.pdf
+  \item s20221121.pdf
+  \item s20221122.pdf
+  \item s20221123.pdf
+  \item s20221124.pdf
+  \item s20221125.pdf
+  \item s20221128.pdf
+  \item s20221129.pdf
+  \item s20221130.pdf
+  \item s20221201.pdf
+  \item s20221202.pdf
+  \item s20221205.pdf
+  \item s20221206.pdf
+  \item s20221207.pdf
+  \item s20221208.pdf
+  \item s20221213.pdf
+  \item s20221214.pdf
+  \item s20221215.pdf
+\end{itemize}
+
+\section*{Dossier '/CSV\_par\_date'}
+Ce dossier contient 85 fichiers CSV extraits, classés par date des séances. Voici la liste complète des fichiers:
+
+\begin{itemize}
+  \item s20220104.csv
+  \item s20220105.csv
+  \item s20220106.csv
+  \item s20220110.csv
+  \item s20220111.csv
+  \item s20220112.csv
+  \item s20220113.csv
+  \item s20220115.csv
+  \item s20220118.csv
+  \item s20220119.csv
+  \item s20220120.csv
+  \item s20220125.csv
+  \item s20220126.csv
+  \item s20220127.csv
+  \item s20220201.csv
+  \item s20220202.csv
+  \item s20220203.csv
+  \item s20220208.csv
+  \item s20220209.csv
+  \item s20220215.csv
+  \item s20220216.csv
+  \item s20220217.csv
+  \item s20220221.csv
+  \item s20220222.csv
+  \item s20220223.csv
+  \item s20220224.csv
+  \item s20220225.csv
+  \item s20220301.csv
+  \item s20220323.csv
+  \item s20220706.csv
+  \item s20220712.csv
+  \item s20220713.csv
+  \item s20220719.csv
+  \item s20220720.csv
+  \item s20220721.csv
+  \item s20220726.csv
+  \item s20220727.csv
+  \item s20220728.csv
+  \item s20220729.csv
+  \item s20220801.csv
+  \item s20220802.csv
+  \item s20220803.csv
+  \item s20220804.csv
+  \item s20221004.csv
+  \item s20221005.csv
+  \item s20221006.csv
+  \item s20221011.csv
+  \item s20221012.csv
+  \item s20221013.csv
+  \item s20221018.csv
+  \item s20221019.csv
+  \item s20221020.csv
+  \item s20221025.csv
+  \item s20221026.csv
+  \item s20221102.csv
+  \item s20221103.csv
+  \item s20221104.csv
+  \item s20221107.csv
+  \item s20221108.csv
+  \item s20221109.csv
+  \item s20221110.csv
+  \item s20221112.csv
+  \item s20221114.csv
+  \item s20221115.csv
+  \item s20221116.csv
+  \item s20221117.csv
+  \item s20221118.csv
+  \item s20221119.csv
+  \item s20221121.csv
+  \item s20221122.csv
+  \item s20221123.csv
+  \item s20221124.csv
+  \item s20221125.csv
+  \item s20221128.csv
+  \item s20221129.csv
+  \item s20221130.csv
+  \item s20221201.csv
+  \item s20221202.csv
+  \item s20221205.csv
+  \item s20221206.csv
+  \item s20221207.csv
+  \item s20221208.csv
+  \item s20221213.csv
+  \item s20221214.csv
+  \item s20221215.csv
+\end{itemize}
+
+\section*{Dossier '/filter\_data'}
+Ce dossier contient 246 fichiers CSV extraits, classés par nom de Sénateur pour l'année 2022. Voici quelques exemples parmi la liste complète:
+
+\begin{itemize}
+  \item Abdallah\_Hassani.csv
+  \item Agnès\_Canayer.csv
+  \item Alain\_Cadec.csv
+  \item Alain\_Cazabonne.csv
+  \item Alain\_Chatillon.csv
+  \item Alain\_Duffourg.csv
+  \item Alain\_Houpert.csv
+  \item Alain\_Joyandet.csv
+  \item Alain\_Marc.csv
+  \item Alain\_Milon.csv
+  \item Alain\_Richard.csv
+  \item Albéric\_de\_Montgolfier.csv
+  \item Alexandra\_Borchio\_Fontimp.csv
+  \item Amel\_Gacquerre.csv
+  \item André\_Gattolin.csv
+  \item André\_Guiol.csv
+  \item André\_Reichardt.csv
+  \item André\_Vallini.csv
+  \item Angèle\_Préville.csv
+  \item Anne-Catherine\_Loisier.csv
+  \item Anne\_Chain-Larché.csv
+  \item Anne\_Ventalon.csv
+  \item Annick\_Billon.csv
+  \item Annick\_Jacquemet.csv
+  \item Annick\_Petrus.csv
+  \item Annie\_Delmont-Koropoulis.csv
+  \item Annie\_Le\_Houerou.csv
+  \item Antoine\_Lefèvre.csv
+  \item Arnaud\_Bazin.csv
+  \item Arnaud\_de\_Belenet.csv
+  \item Bernard\_Bonne.csv
+  \item Bernard\_Buis.csv
+  \item Bernard\_Delcros.csv
+  \item Bernard\_Fialaire.csv
+  \item Bernard\_Fournier.csv
+  \item Bernard\_Jomier.csv
+  \item Brigitte\_Devésa.csv
+  \item Brigitte\_Lherbier.csv
+  \item Brigitte\_Micouleau.csv
+  \item Bruno\_Belin.csv
+  \item Bruno\_Retailleau.csv
+  \item Bruno\_Rojouan.csv
+  \item Bruno\_Sido.csv
+  \item Béatrice\_Gosselin.csv
+  \item Catherine\_Belrhiti.csv
+  \item Catherine\_Conconne.csv
+  \item Catherine\_Deroche.csv
+  \item Catherine\_Di\_Folco.csv
+  \item Catherine\_Dumas.csv
+  \item Catherine\_Morin-Desailly.csv
+  \item Catherine\_Procaccia.csv
+  \item Cathy\_Apourceau-Poly.csv
+  \item Chantal\_Deseyne.csv
+  \item Charles\_Guené.csv
+  \item Christian\_Bilhac.csv
+  \item Christian\_Cambon.csv
+  \item Christian\_Klinger.csv
+  \item Christian\_Redon-Sarrazy.csv
+  \item Christine\_Bonfanti-Dossat.csv
+  \item Christine\_Herzog.csv
+  \item Christine\_Lavarde.csv
+  \item Christophe-André\_Frassa.csv
+  \item Claude\_Kern.csv
+  \item Claude\_Malhuret.csv
+  \item Claude\_Nougein.csv
+  \item Claude\_Raynal.csv
+  \item Claudine\_Thomas.csv
+  \item Colette\_Mélot.csv
+  \item Corinne\_Féret.csv
+  \item Corinne\_Imbert.csv
+  \item Cyril\_Pellevat.csv
+  \item Cécile\_Cukierman.csv
+  \item Cédric\_Perrin.csv
+  \item Cédric\_Vial.csv
+  \item Céline\_Boulay-Espéronnier.csv
+  \item Céline\_Brulin.csv
+  \item Damien\_Regnard.csv
+  \item Daniel\_Breuiller.csv
+  \item Daniel\_Chasseing.csv
+  \item Daniel\_Gremillet.csv
+  \item Daniel\_Gueret.csv
+  \item Daniel\_Laurent.csv
+  \item Daniel\_Salmon.csv
+  \item Dany\_Wattebled.csv
+  \item Daphné\_Ract-Madoux.csv
+  \item David\_Assouline.csv
+  \item Denis\_Bouad.csv
+  \item Denise\_Saint-Pé.csv
+  \item Didier\_Mandelli.csv
+  \item Didier\_Marie.csv
+  \item Didier\_Rambaud.csv
+  \item Dominique\_Estrosi\_Sassone.csv
+  \item Dominique\_Théophile.csv
+  \item Dominique\_Vérien.csv
+  \item Dominique\_de\_Legge.csv
+  \item Elsa\_Schalck.csv
+  \item Else\_Joseph.csv
+  \item Emmanuel\_Capus.csv
+  \item Esther\_Benbassa.csv
+  \item Fabien\_Gay.csv
+  \item Fabien\_Genet.csv
+  \item Florence\_Blatrix\_Contat.csv
+  \item Florence\_Lassarade.csv
+  \item Franck\_Menonville.csv
+  \item Franck\_Montaugé.csv
+  \item François-Noël\_Buffet.csv
+  \item François\_Bonhomme.csv
+  \item François\_Bonneau.csv
+  \item François\_Calvet.csv
+  \item François\_Patriat.csv
+  \item Françoise\_Dumont.csv
+  \item Françoise\_Férat.csv
+  \item Françoise\_Gatel.csv
+  \item Frédéric\_Marchand.csv
+  \item Frédérique\_Espagnac.csv
+  \item Frédérique\_Gerbaud.csv
+  \item Frédérique\_Puissat.csv
+  \item Georges\_Patient.csv
+  \item Gilbert-Luc\_Devinaz.csv
+  \item Gilbert\_Bouchet.csv
+  \item Gilbert\_Favreau.csv
+  \item Gilbert\_Roger.csv
+  \item Gisèle\_Jourda.csv
+  \item Guillaume\_Chevrollier.csv
+  \item Guillaume\_Gontard.csv
+  \item Guy\_Benarroche.csv
+  \item Guylène\_Pantel.csv
+  \item Gérard\_Lahellec.csv
+  \item Gérard\_Longuet.csv
+  \item Gérard\_Poadja.csv
+  \item Henri\_Cabanel.csv
+  \item Henri\_Leroy.csv
+  \item Hervé\_Gillé.csv
+  \item Hervé\_Marseille.csv
+  \item Hervé\_Maurey.csv
+  \item Hugues\_Saury.csv
+  \item Hussein\_Bourgi.csv
+  \item Hélène\_Conway-Mouret.csv
+  \item Isabelle\_Briquet.csv
+  \item Isabelle\_Raimond-Pavero.csv
+  \item Jacqueline\_Eustache-Brinio.csv
+  \item Jacques-Bernard\_Magner.csv
+  \item Jacques\_Fernique.csv
+  \item Jacques\_Grosperrin.csv
+  \item Jacques\_Le\_Nay.csv
+  \item Jean-Baptiste\_Blanc.csv
+  \item Jean-Baptiste\_Lemoyne.csv
+  \item Jean-Claude\_Anglars.csv
+  \item Jean-Claude\_Requier.csv
+  \item Jean-Claude\_Tissot.csv
+  \item Jean-François\_Husson.csv
+  \item Jean-François\_Longeot.csv
+  \item Jean-François\_Rapin.csv
+  \item Jean-Jacques\_Lozach.csv
+  \item Jean-Jacques\_Michau.csv
+  \item Jean-Jacques\_Panunzi.csv
+  \item Jean-Louis\_Lagourgue.csv
+  \item Jean-Luc\_Fichet.csv
+  \item Jean-Marc\_Boyer.csv
+  \item Jean-Marc\_Todeschini.csv
+  \item Jean-Marie\_Mizzon.csv
+  \item Jean-Marie\_Vanlerenberghe.csv
+  \item Jean-Michel\_Arnaud.csv
+  \item Jean-Michel\_Houllegatte.csv
+  \item Jean-Noël\_Cardoux.csv
+  \item Jean-Noël\_Guérini.csv
+  \item Jean-Paul\_Prince.csv
+  \item Jean-Pierre\_Corbisez.csv
+  \item Jean-Pierre\_Decool.csv
+  \item Jean-Pierre\_Grand.csv
+  \item Jean-Pierre\_Moga.csv
+  \item Jean-Pierre\_Sueur.csv
+  \item Jean-Raymond\_Hugonet.csv
+  \item Jean-Yves\_Leconte.csv
+  \item Jean-Yves\_Roux.csv
+  \item Jean\_Bacci.csv
+  \item Jean\_Hingray.csv
+  \item Jean\_Louis\_Masson.csv
+  \item Jean\_Pierre\_Vogel.csv
+  \item Jean\_Sol.csv
+  \item Jocelyne\_Guidez.csv
+  \item Joël\_Bigot.csv
+  \item Joël\_Guerriau.csv
+  \item Joël\_Labbé.csv
+  \item Joëlle\_Garriaud-Maylam.csv
+  \item Julien\_Bargeton.csv
+  \item Jérémy\_Bacchi.csv
+  \item Jérôme\_Bascher.csv
+  \item Jérôme\_Durain.csv
+  \item Kristina\_Pluchet.csv
+  \item Lana\_Tetuanui.csv
+  \item Laure\_Darcos.csv
+  \item Laurence\_Cohen.csv
+  \item Laurence\_Garnier.csv
+  \item Laurence\_Harribey.csv
+  \item Laurence\_Muller-Bronn.csv
+  \item Laurence\_Rossignol.csv
+  \item Laurent\_Burgoa.csv
+  \item Laurent\_Duplomb.csv
+  \item Laurent\_Lafon.csv
+  \item Laurent\_Somon.csv
+  \item Louis-Jean\_de\_Nicolaÿ.csv
+  \item Loïc\_Hervé.csv
+  \item Lucien\_Stanzione.csv
+  \item Ludovic\_Haye.csv
+  \item Marc-Philippe\_Daubresse.csv
+  \item Marc\_Laménie.csv
+  \item Marie-Arlette\_Carlotti.csv
+  \item Marie-Christine\_Chauvin.csv
+  \item Marie-Claude\_Varaillas.csv
+  \item Marie-Laure\_Phinera-Horth.csv
+  \item Marie-Noëlle\_Lienemann.csv
+  \item Marie-Pierre\_Monier.csv
+  \item Marie-Pierre\_Richer.csv
+  \item Marie-Pierre\_de\_La\_Gontrie.csv
+  \item Marie\_Evrard.csv
+  \item Marie\_Mercier.csv
+  \item Marta\_de\_Cidrac.csv
+  \item Martin\_Lévrier.csv
+  \item Martine\_Berthet.csv
+  \item Martine\_Filleul.csv
+  \item Maryse\_Carrère.csv
+  \item Mathieu\_Darnaud.csv
+  \item Max\_Brisson.csv
+  \item Michel\_Bonnus.csv
+  \item Michel\_Canévet.csv
+  \item Michel\_Dagbert.csv
+  \item Michel\_Dennemont.csv
+  \item Michel\_Laugier.csv
+  \item Michel\_Savin.csv
+  \item Micheline\_Jacques.csv
+  \item Michelle\_Gréaume.csv
+  \item Michelle\_Meunier.csv
+  \item Mickaël\_Vallet.csv
+  \item Mikaele\_Kulimoetoke.csv
+  \item Monique\_Lubin.csv
+  \item Monique\_de\_Marco.csv
+  \item Muriel\_Jourda.csv
+  \item Mélanie\_Vogel.csv
+  \item Nadia\_Sollogoub.csv
+  \item Nadine\_Bellurot.csv
+  \item Nadège\_Havet.csv
+  \item Nassimah\_Dindar.csv
+  \item Nathalie\_Delattre.csv
+  \item Nathalie\_Goulet.csv
+  \item Nicole\_Bonnefoy.csv
+  \item Nicole\_Duranton.csv
+  \item Olivier\_Cadic.csv
+  \item Olivier\_Cigolotti.csv
+  \item Olivier\_Henno.csv
+  \item Olivier\_Jacquin.csv
+  \item Olivier\_Paccaud.csv
+  \item Olivier\_Rietmann.csv
+  \item Pascal\_Allizard.csv
+  \item Pascal\_Martin.csv
+  \item Pascal\_Savoldelli.csv
+  \item Pascale\_Gruny.csv
+  \item Patrice\_Joly.csv
+  \item Patricia\_Demas.csv
+  \item Patricia\_Schillinger.csv
+  \item Patrick\_Chaize.csv
+  \item Patrick\_Chauvet.csv
+  \item Patrick\_Kanner.csv
+  \item Paul\_Toussaint\_Parigi.csv
+  \item Philippe\_Bas.csv
+  \item Philippe\_Bonnecarrère.csv
+  \item Philippe\_Dominati.csv
+  \item Philippe\_Folliot.csv
+  \item Philippe\_Mouiller.csv
+  \item Philippe\_Nachbar.csv
+  \item Philippe\_Paul.csv
+  \item Philippe\_Pemezec.csv
+  \item Philippe\_Tabarot.csv
+  \item Pierre-Antoine\_Levi.csv
+  \item Pierre-Jean\_Verzelen.csv
+  \item Pierre\_Charon.csv
+  \item Pierre\_Cuypers.csv
+  \item Pierre\_Frogier.csv
+  \item Pierre\_Laurent.csv
+  \item Pierre\_Louault.csv
+  \item Pierre\_Médevielle.csv
+  \item Pierre\_Ouzoulias.csv
+  \item Rachid\_Temal.csv
+  \item Raymonde\_Poncet\_Monge.csv
+  \item René-Paul\_Savary.csv
+  \item Roger\_Karoutchi.csv
+  \item Ronan\_Dantec.csv
+  \item Ronan\_Le\_Gleut.csv
+  \item Rémi\_Cardon.csv
+  \item Rémi\_Féraud.csv
+  \item Rémy\_Pointereau.csv
+  \item Sabine\_Drexler.csv
+  \item Sabine\_Van\_Heghe.csv
+  \item Samantha\_Cazebonne.csv
+  \item Sebastien\_Pla.csv
+  \item Serge\_Babary.csv
+  \item Serge\_Mérillou.csv
+  \item Sonia\_de\_La\_Provôté.csv
+  \item Sophie\_Primas.csv
+  \item Sophie\_Taillé-Polian.csv
+  \item Stéphane\_Artano.csv
+  \item Stéphane\_Demilly.csv
+  \item Stéphane\_Le\_Rudulier.csv
+  \item Stéphane\_Piednoir.csv
+  \item Stéphane\_Ravier.csv
+  \item Stéphane\_Sautarel.csv
+  \item Sylviane\_Noël.csv
+  \item Sylvie\_Goy-Chavent.csv
+  \item Sylvie\_Robert.csv
+  \item Sylvie\_Vermeillet.csv
+  \item Sébastien\_Meurant.csv
+  \item Teva\_Rohfritsch.csv
+  \item Thani\_Mohamed\_Soilihi.csv
+  \item Thierry\_Cozic.csv
+  \item Thierry\_Meignen.csv
+  \item Thomas\_Dossus.csv
+  \item Toine\_Bourrat.csv
+  \item Valérie\_Boyer.csv
+  \item Valérie\_Létard.csv
+  \item Vanina\_Paoli-Gagin.csv
+  \item Victoire\_Jasmin.csv
+  \item Victorin\_Lurel.csv
+  \item Vincent\_Capo-Canellas.csv
+  \item Vincent\_Delahaye.csv
+  \item Vincent\_Segouin.csv
+  \item Vincent\_Éblé.csv
+  \item Vivette\_Lopez.csv
+  \item Viviane\_Artigalas.csv
+  \item Viviane\_Malet.csv
+  \item Véronique\_Guillotin.csv
+  \item Xavier\_Iacovelli.csv
+  \item Yan\_Chantrel.csv
+  \item Yannick\_Vaugrenard.csv
+  \item Yves\_Bouloux.csv
+  \item Yves\_Détraigne.csv
+  \item Édouard\_Courtial.csv
+  \item Éliane\_Assassi.csv
+  \item Élisabeth\_Doineau.csv
+  \item Émilienne\_Poumirol.csv
+  \item Éric\_Bocquet.csv
+  \item Éric\_Gold.csv
+  \item Éric\_Jeansannetas.csv
+  \item Éric\_Kerrouche.csv
+  \item Étienne\_Blanc.csv
+  \item Évelyne\_Perrot.csv
+  \item Évelyne\_Renaud-Garabedian.csv
+\end{itemize}
+
+\section*{Dossier '/Script Python'}
+Ce dossier contient trois fichiers Jupyter Notebook liés aux scripts d'extraction utilisés durant ce mémoire :
+\begin{itemize}
+  \item \textbf{Telecharge\_cri\_PDF.ipynb} : Script pour télécharger les fichiers Journaux Officiels à partir du site du Sénat.
+  \item \textbf{extraction.ipynb} : Script pour extraire les informations des Journaux Officiels.
+  \item \textbf{filtre\_verifie.ipynb} : Script pour nettoyer, vérifier et comparer les lignes des fichiers CSV classés par date des séances avec l'écran de validation de Prepub.
+\end{itemize}
+
+	
+	\clearemptydoublepage
+	\backmatter
+
+	
+ 	\printglossaries
+
+        \tableofcontents
+	\listoffigures
+	\listoftables
+\end{document}
+	
